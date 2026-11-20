@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Production build
+dist/
+dist-ssr/
+
+# Local env & temp files
+.env
+.env.local
+.chrome-profile*
+*.log
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
