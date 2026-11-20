@@ -1,53 +1,116 @@
-# JALAMAP · Monsoon Street Atlas
+# JALAMAP V3 — Smart Monsoon Road Navigation
 
-> **JALAMAP** is a community road-condition prototype designed for monsoon-affected commutes in Puttur, Dakshina Kannada, Karnataka. Built for **RESURRECT 2026**, it answers the critical commuter question:  
-> *“A message says there's water near Darbe — which road does that mean, when was it reported, and does my route change?”*
+> **JALAMAP** is an intelligent, flood-aware road navigation application designed for monsoon commuters in **Puttur, Dakshina Kannada, Karnataka**, built for **RESURRECT 2026**.
+> 
+> *"Don't just find the way. Know if the way is clear."*
 
-![JALAMAP Confirmed Detour State](docs/screenshots/03-confirmed-detour.png)
-
----
-
-## Cartographic Art Direction
-
-JALAMAP is styled as a printed street atlas brought to life:
-- **Warm paper ground** (`#F2EFE6`) with subtle urban settlement blocks in sand and stone tones.
-- **Street network hierarchy** with realistic road widths, ivory fills, and casings that merge into authentic road intersections rather than abstract graph nodes.
-- **Saturated petrol teal route** (`#007C76`) delivering high contrast across projector screens.
-- **Vermilion closure barrier** (`#DC3826`) and direct leader line indicating the exact affected approach at Darbe Junction.
-- **Working Route Comparison**: Interactive segmented buttons (`[ Original · 4.8 km ]` vs `[ Detour · 5.6 km ]`) allowing judges and commuters to visually compare paths before and after closure.
+![JALAMAP V3 Navigation](docs/screenshots/01-v3-navigation-home.png)
 
 ---
 
-## What It Demonstrates
+## The Core Product Philosophy
 
-1. **State A — Initial Journey**: Opens directly on an active morning commute from **Kallare Gateway** to **Kombettu Hub** via Darbe Junction (4.8 km).
-2. **State B — One Observation**: Rider A reports water at the Darbe West Approach. An amber beacon and leader callout flag the road (`▲ Darbe approach: 1 report`); the route remains unchanged awaiting independent confirmation.
-3. **State C — Confirmed Detour**: Rider B independently confirms the blockage. Two matching observations trigger consensus. The Darbe Approach closes with a vermilion barrier, the former route becomes a muted dashed line, and the new detour draws via North Town Bypass (`5.6 km`, `+800 m detour`).
-4. **Route Comparison**: Commuters can toggle between the historical path before closure (`Original · 4.8 km`) and the active detour (`Detour · 5.6 km`).
-5. **State D — Verified Reopening**: When two riders observe water receding, the direct shorter route is restored, preserving the full chronological evidence timeline.
+Most navigation systems assume roads are permanently open or rely on manual, cumbersome voting workflows. In a Coastal Karnataka monsoon, flash inundation and stream runoff can submerge a road approach in minutes.
 
-*Note on pilot data*: This prototype uses an offline schematic road network of the Puttur pilot area and simulated commuter identities (Rider A & Rider B) to demonstrate consensus rules under intermittent connectivity.
+**JALAMAP eliminates complex dashboards, manual voting buttons, and camera monitors for ordinary commuters.**
+
+### The Commuter Workflow:
+1. **Choose a starting point** (e.g., Kallare).
+2. **Choose a destination** (e.g., Kombettu).
+3. **Click `Start Navigation`**.
+
+**Everything else happens automatically.**
+
+When road conditions change ahead—whether detected by background municipal CCTV intelligence or crowdsourced community observations—JALAMAP automatically evaluates the evidence, recalculates the safest remaining route from the **commuter's current position**, and continues guiding the journey.
+
+---
+
+## Key Capabilities in V3
+
+### 1. Minimal, Navigation-First Interface
+- **Map-First Focus**: The cartographic atlas occupies the primary screen area with warm ivory styling (`#F2EFE6`), clear road hierarchy, building parcels, and Kumaradhara tributary.
+- **Petrol Teal Route** (`#007C76`): High-contrast routing path with a pale protective halo.
+- **Amber Provisional Hazards** (`#D98818`): Precautionary avoid-road warnings.
+- **Coral Red Blockages** (`#DC3826`): Confirmed impassable road closures with hazard barrier stripes.
+- **Removed Clutter**: Removed technical state cards, Rider A/B switcher buttons, manual "Confirm Blockage" prompts, and CCTV viewer screens from the commuter interface.
+
+### 2. Background CCTV Intelligence
+- **Strictly Behind the Scenes**: Commuters are **never** shown surveillance footage, camera feeds, or manual inspection controls.
+- **Automated Hazard Ingestion**: Registered municipal cameras (`CAM-01` at Darbe, `CAM-02` at Bannur, etc.) feed a background detection adapter.
+- **Automated Route Update**: A high-confidence waterlogging detection automatically applies a provisional road restriction, re-evaluates active commuter routes, and recalculates alternatives from the vehicle's live position with a nonintrusive alert:  
+  *“Possible flooding detected ahead by background CCTV. Alternative route selected.”*
+
+### 3. Community Reporting (Zero Manual Confirmation Buttons)
+- Commuters simply tap **`+ Report Road`**.
+- Select the condition: **Road Blocked**, **Partially Blocked**, **Road Passable**, or **Not Sure**.
+- Tap **Submit Report**.
+- The evidence engine clusters submissions, weeds out duplicate votes from the same user, accounts for report freshness, and automatically updates road restrictions and active navigation routes.
+
+### 4. Unlimited-Contributor Data Model
+- **No 2-Rider Limit**: Replaces the hardcoded Rider A/Rider B limit with an open contributor architecture supporting an arbitrary number of users (3, 20, 50, 100+).
+- **Independent Identity Governance**: Unique user identity tracking ensures duplicate submissions by one user do not artificially inflate restriction counts.
+- **Freshness Decay**: Older reports (> 45 minutes) decay as monsoon floodwaters shift.
+
+### 5. Continuous Mid-Journey Rerouting
+- **Current-Position Departure**: When a hazard appears ahead, JALAMAP reroutes from the commuter's **current coordinates and heading**, never restarting from the original starting point.
+- **Behind-the-User Protection**: Restrictions on roads behind the commuter or on unrelated corridors do not trigger unnecessary route recalculations.
+- **Automatic Reopening**: When fresh credible evidence (3 passable reports or CCTV clearance) confirms water has receded, the road reopens in the graph and the journey restores to the optimal route.
+
+---
+
+## Demonstration Scenarios (Simulation Studio)
+
+For hackathon judges and technical evaluators, demo controls are housed in a collapsible **Simulation Studio** drawer (toggle via `Demo Controls` in the header).
+
+| Scenario | Title | Description |
+| :--- | :--- | :--- |
+| **Scenario 1** | **Normal Journey** | Commute Kallare → Kombettu (4.8 km via Darbe). Starts journey and begins moving the vehicle. |
+| **Scenario 2** | **Mid-Journey CCTV Hazard** | Advances vehicle toward Bolwar, triggers background CCTV waterlogging at Darbe. Reroutes automatically from CURRENT position via Town Bypass (no camera footage shown). |
+| **Scenario 3** | **Community Consensus** | Simulates 3 distinct independent community reports on Darbe–Bannur. Automatically evaluated; road restricted; routes updated. |
+| **Scenario 4** | **Automatic Reopening** | Simulates 3 distinct passable reports and sustained CCTV clearance. Reopens road and restores optimal path. |
+| **Scenario 5** | **Sequential Blockages** | Triggers a second blockage ahead while navigating the detour. Recalculates tertiary route from live location. |
+| **Scale Test** | **100 Contributors** | Fires 3, 20, or 100 simulated distinct contributors to verify the unlimited-contributor data model. |
+
+![Mid-Journey CCTV Reroute](docs/screenshots/03-v3-cctv-reroute.png)
+
+---
+
+## Technical Transparency: What Works vs. What Is Simulated
+
+In adherence to RESURRECT 2026 integrity guidelines:
+
+| Feature | Implementation Status | Notes |
+| :--- | :--- | :--- |
+| **Dijkstra Shortest Path Engine** | **Genuinely Works** | Dynamic edge weighting, penalty multipliers, and SVG bezier geometry interpolation execute in client TypeScript. |
+| **Continuous Dynamic Rerouting** | **Genuinely Works** | Evaluates remaining segments ahead, computes new path from vehicle coordinates, updates distance and ETA dynamically. |
+| **Multi-Contributor Evidence Engine** | **Genuinely Works** | Independent contributor grouping, duplicate filtering, decay windows, and consensus evaluation execute in real-time. |
+| **Background CCTV Pipeline** | **Telemetry Simulated** | The event pipeline, subscription model, and route triggers are genuine. Computer vision video processing is deterministic simulated telemetry labeled with `isDemonstration: true`. |
+| **Vehicle Progression** | **Controlled Simulation** | Vehicle moves smoothly along cubic bezier curves of the Puttur road network. (Real GPS requires live physical movement in Puttur). |
+| **Cross-Device Shared Backend** | **Schema Ready & Configurable** | Complete PostgreSQL/Supabase schema, RLS policies, and SQL triggers are provided in `supabase/migrations/001_jalamap_schema.sql`. Operates in local reactive mode if Supabase keys are not set. |
+| **RainWatch Weather** | **Contextual Simulation** | Displays realistic monsoon hydromet risk for Puttur, Dakshina Kannada. IMD integration endpoint documented in `.env.example`. |
 
 ---
 
 ## Quick Start
-
-### Prerequisites
-- Node.js (v18+ recommended, verified on Node v24)
-- npm
 
 ### 1. Install Dependencies
 ```bash
 npm install
 ```
 
-### 2. Start Local Development Server
+### 2. Run Automated Verification Tests
+```bash
+npm test
+```
+*Executes all 20 Phase 13 verification tests including routing, multi-contributor scaling, CCTV ingestion, duplicate prevention, and reopening logic.*
+
+### 3. Start Development Server
 ```bash
 npm run dev
 ```
 Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-### 3. Production Build & Preview
+### 4. Build for Production
 ```bash
 npm run build
 npm run preview
@@ -55,56 +118,55 @@ npm run preview
 
 ---
 
-## Role of CCTV Camera Evidence (Pitch Slide 8)
+## Architecture Overview
 
-When a commuter reports flooding near a junction, words like *“near Darbe”* leave a critical operational question: *can we see the exact stretch of road the rider is talking about?*
-
-JALAMAP introduces a municipal road-camera review workflow that provides immediate visual corroboration while upholding decentralized community trust:
-- **Exact-Segment Verification**: Camera records are bound directly to road-segment IDs (e.g. `CAM-01` covers `seg_bolwar_darbe`). A camera facing a different approach to the same junction is a different view and will never substitute.
-- **Configurable Temporal Matching Window**: Road frames are only matched if captured within a **10-minute demo window** (`CAMERA_FRAME_WINDOW_MINUTES = 10`) of the rider report. Stale frames are flagged explicitly with their capture time (e.g. *“No frame close to the report time (captured 07:45 IST · 29 min before report)”*), and roads without cameras display *“No camera covers this stretch”*.
-- **Strict Consensus Governance (Supporting Evidence Only)**: Camera observations provide visual ground truth (e.g., *“Water visible on the road”*, *“View obstructed”*), but **never cast a consensus vote**. The **two-rider rule strictly controls closure and reopening**. An incident with 1 rider report and 1 camera observation remains in `Waiting for a second rider` status with the original route active until an independent second commuter confirms.
-- **Asset Attribution**: Camera views in this prototype are project-created high-fidelity illustrative vector stills (`public/assets/cctv/cam-01-darbe-west.png`, `.svg`) depicting an authentic Coastal Karnataka monsoon corridor with curb-to-curb water accumulation, labeled with permanent `Recorded demo frame` and `Illustrative camera view` disclosures.
-
----
-
-## Try the Demo (35-Second Walkthrough)
-
-Follow these exact button steps in the running prototype:
-
-1. **Open the App**: Observe the active commute line (`4.8 km via Darbe`) routed directly through Darbe Junction.
-2. **Click `Report a blockage`**: Rider A records high water on *Darbe West Approach* at `08:14 IST`. The status updates to `Waiting for a second rider` with an amber beacon on the map.
-3. **Inspect the Road Camera Section**: Notice the compact `Road camera` card appears under supporting evidence with thumbnail `CAM-01`, road name, and capture time `08:12 IST · 2 minutes before the report`.
-4. **Click `Review camera frame`**: Opens the camera frame inspector in the workspace. Notice the map highlights Darbe West Approach and displays a directional camera marker (`CAM-01`) pointing East toward Darbe Junction.
-5. **Select an Observation & Attach**: Under *“What can you see?”*, select `Water visible on the road` and click `Attach observation`. The observation is recorded and pinned to the incident timeline.
-6. **Verify Governance Independence**: Notice the rider count remains `1 of 2 required (· 1 camera review)`, the status remains `Waiting for a second rider`, and the route remains `4.8 km via Darbe`. Camera evidence does not prematurely close the road.
-7. **Click `✕` to Close Review**: The incident timeline now displays both Rider A's report and `Camera observation · CAM-01`.
-8. **Switch to Rider B & Confirm**: Click `Switch to Rider B (Independent witness) →`, then click `Confirm blockage`. Two independent riders confirm consensus: Darbe West Approach closes with a vermilion barrier, and the detour draws via Town Bypass (`5.6 km`, `+800 m detour`).
-9. **Reopen Camera Observation After Detour**: In the Evidence Timeline, click `Camera observation · CAM-01`. The review frame reopens showing the original `08:12 IST` still, capture time, and attached observation.
-10. **Click `Reset demo`** (top right) at any time to clear state and reset the demonstration.
-
----
-
-## Architectural Implementation & Core Files
-
-| Concern | Source File | Description |
-|---|---|---|
-| **Road Network Graph** | [`src/data/putturNetwork.ts`](src/data/putturNetwork.ts) | 9 junctions, coordinates, road segment definitions, and distance weights. |
-| **CCTV Camera Registry & Matching** | [`src/data/cameraData.ts`](src/data/cameraData.ts) | Camera registry (`CAM-01`, `CAM-02`), 10-minute temporal matching window, and time delta engine. |
-| **Camera Review Modal** | [`src/components/CameraReviewModal.tsx`](src/components/CameraReviewModal.tsx) | Restrained desktop frame inspector and mobile bottom sheet with 4 visual observation choices. |
-| **Shortest-Path Routing** | [`src/utils/routing.ts`](src/utils/routing.ts) | Dijkstra shortest-path engine excluding blocked segments and computing path geometry. |
-| **Consensus Verification** | [`src/utils/verification.ts`](src/utils/verification.ts) | Two-witness consensus rule and duplicate observer rejection logic (isolated from camera reviews). |
-| **Cartographic Map** | [`src/components/MapAtlas.tsx`](src/components/MapAtlas.tsx) | Warm daylight SVG street atlas with urban blocks, seamless junctions, directional camera marker, and route comparison. |
-| **Incident Sheet** | [`src/components/IncidentSheet.tsx`](src/components/IncidentSheet.tsx) | Road camera card, route comparison segmented control, and chronological evidence timeline. |
-| **State Persistence** | [`src/utils/storage.ts`](src/utils/storage.ts) | `localStorage` persistence surviving page refresh with dedicated demo reset. |
+```
+Commuter UI: Start Navigation & Report Road
+     │
+     ├──> Local / Geolocation Position Tracking
+     │
+Central Event Engine & Database Service (src/services/database.ts)
+     ▲                                   ▲
+     │                                   │
+Background CCTV Service             Crowdsourced Reports
+(src/services/cctvService.ts)       (src/components/ReportModal.tsx)
+     │                                   │
+     └───────────────┬───────────────────┘
+                     ▼
+       Evidence Evaluation Engine (src/utils/evidenceEngine.ts)
+       - Deduplication by User ID
+       - Temporal Freshness Window (45 min)
+       - Multi-Contributor Thresholds (>= 3 reports)
+                     │
+                     ▼
+       Authoritative Road Restrictions
+                     │
+                     ▼
+       Dynamic Routing Engine (src/utils/routing.ts)
+       - Recalculates from Current Vehicle Position
+       - Avoids Confirmed Blockages (Infinity penalty)
+       - Penalizes Provisional Hazards (6x penalty)
+                     │
+                     ▼
+       Map Atlas Viewport & Alert HUD
+```
 
 ---
 
-## Verified Proof Screenshots
+## Database Migrations (Supabase / PostgreSQL)
 
-All screenshots were captured from a standalone browser at 1440 × 900 (and 16:9 for the slide) and are located in `docs/screenshots/`:
-- [`01-initial-route.png`](docs/screenshots/01-initial-route.png) — Initial 4.8 km commute through Darbe Junction.
-- [`02-one-rider.png`](docs/screenshots/02-one-rider.png) — One observation by Rider A with amber beacon, awaiting verification.
-- [`03-confirmed-detour.png`](docs/screenshots/03-confirmed-detour.png) — Confirmed closure with vermilion barrier, dashed former route, and 5.6 km (+800 m) detour.
-- [`04-reopened.png`](docs/screenshots/04-reopened.png) — Two riders verify reopening, direct route restored, full timeline preserved.
-- [`05-cctv-evidence.png`](docs/screenshots/05-cctv-evidence.png) — **CCTV evidence review on Darbe West Approach (Slide 8)**: CAM-01 frame still at 08:12 IST, temporal delta (2 min before report), attached observation *“Water visible on the road”*, directional camera marker on map, and incident awaiting independent Rider B confirmation.
-- [`jalamap-route-comparison.png`](docs/screenshots/jalamap-route-comparison.png) — 16:9 presentation slide proof image with side-by-side equal-scale crops of Darbe approach in State B vs State C.
+If connecting a shared Supabase instance:
+1. Copy `.env.example` to `.env.local` and add your `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+2. Apply the migration file:
+   ```bash
+   supabase db push
+   # or execute supabase/migrations/001_jalamap_schema.sql in the Supabase SQL Editor
+   ```
+3. Realtime subscriptions will synchronize road restrictions across all devices.
+
+---
+
+## License & Attribution
+
+Developed for **RESURRECT 2026** — VVEC Hackathon.  
+Pilot Area: Puttur, Dakshina Kannada, Karnataka.
