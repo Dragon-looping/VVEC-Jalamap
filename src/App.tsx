@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Header } from './components/Header';
 import { MapAtlas } from './components/MapAtlas';
 import { IncidentSheet } from './components/IncidentSheet';
+import { CameraReviewModal } from './components/CameraReviewModal';
 import {
   RiderId,
   Observation,
@@ -9,6 +10,7 @@ import {
   RouteResult,
   JalamapState,
   ComparisonRouteSelection,
+  CameraObservation,
 } from './types';
 import {
   PUTTUR_SEGMENTS,
@@ -17,6 +19,10 @@ import {
   DESTINATION_NODE_ID,
   RIDERS,
 } from './data/putturNetwork';
+import {
+  CAMERA_REGISTRY,
+  getCameraForSegment,
+} from './data/cameraData';
 import { computeShortestRoute } from './utils/routing';
 import { canRiderObserve, evaluateConsensus } from './utils/verification';
 import {
@@ -42,6 +48,11 @@ export const App: React.FC = () => {
   );
   const [observations, setObservations] = useState<Observation[]>([]);
   const [reopeningObservations, setReopeningObservations] = useState<Observation[]>([]);
+  const [cameraObservations, setCameraObservations] = useState<CameraObservation[]>([]);
+  const [activeCameraReview, setActiveCameraReview] = useState<{
+    cameraId: string;
+    frameId: string;
+  } | null>(null);
   const [comparisonSelection, setComparisonSelection] = useState<ComparisonRouteSelection>(
     'detour'
   );
@@ -56,6 +67,7 @@ export const App: React.FC = () => {
       setSelectedSegmentId(saved.selectedSegmentId || TARGET_INCIDENT_SEGMENT_ID);
       setObservations(saved.observations || []);
       setReopeningObservations(saved.reopeningObservations || []);
+      setCameraObservations(saved.cameraObservations || []);
       setComparisonSelection(saved.comparisonSelection || 'detour');
     }
   }, []);
@@ -94,6 +106,12 @@ export const App: React.FC = () => {
     return evaluateConsensus(selectedSegmentObservations, selectedSegmentReopenings);
   }, [selectedSegmentObservations, selectedSegmentReopenings]);
 
+  // Camera record for currently selected segment
+  const activeCameraRecord = useMemo(
+    () => getCameraForSegment(selectedSegmentId),
+    [selectedSegmentId]
+  );
+
   // Persist state changes to localStorage
   useEffect(() => {
     const stateToSave: JalamapState = {
@@ -102,6 +120,7 @@ export const App: React.FC = () => {
       highlightedSegmentId,
       observations,
       reopeningObservations,
+      cameraObservations,
       incidentStatus: selectedSegmentStatus,
       comparisonSelection,
       originalRoute: initialBaseRoute,
@@ -115,6 +134,7 @@ export const App: React.FC = () => {
     highlightedSegmentId,
     observations,
     reopeningObservations,
+    cameraObservations,
     selectedSegmentStatus,
     comparisonSelection,
     initialBaseRoute,
@@ -138,6 +158,8 @@ export const App: React.FC = () => {
     setHighlightedSegmentId(null);
     setObservations([]);
     setReopeningObservations([]);
+    setCameraObservations([]);
+    setActiveCameraReview(null);
     setComparisonSelection('detour');
     setInlineNotice(null);
     setAnnouncement('Demo reset to initial commute state.');
@@ -150,7 +172,7 @@ export const App: React.FC = () => {
     setAnnouncement(`Switched demo perspective to ${RIDERS[riderId].shortName}.`);
   }, []);
 
-  // Action: Report Blockage on the Selected Road
+  // Action: Report Blockage on the Selected Road (08:14 IST for deterministic demo)
   const handleReportBlockage = useCallback(() => {
     const profile = RIDERS[currentRider];
     const targetSegment = PUTTUR_SEGMENTS.find((s) => s.id === selectedSegmentId);
@@ -162,10 +184,11 @@ export const App: React.FC = () => {
       riderId: currentRider,
       riderName: profile.shortName,
       type: 'blockage',
-      timestamp: '07:18 AM',
-      note: selectedSegmentId === TARGET_INCIDENT_SEGMENT_ID
-        ? 'Water covers the approach near the junction. Traffic halted.'
-        : `Water pooling across roadway on ${segName}. Impassable for two-wheelers.`,
+      timestamp: '08:14 IST',
+      note:
+        selectedSegmentId === TARGET_INCIDENT_SEGMENT_ID
+          ? 'Water covers the approach near the junction. Traffic halted.'
+          : `Water pooling across roadway on ${segName}. Impassable for two-wheelers.`,
     };
 
     setObservations((prev) => [...prev, newObs]);
@@ -176,7 +199,6 @@ export const App: React.FC = () => {
 
   // Action: Confirm Blockage on the Selected Road
   const handleConfirmBlockage = useCallback(() => {
-    // Check if current rider already submitted an observation for this segment
     const check = canRiderObserve(selectedSegmentObservations, currentRider, 'blockage');
 
     if (!check.canSubmit) {
@@ -199,10 +221,11 @@ export const App: React.FC = () => {
       riderId: currentRider,
       riderName: profile.shortName,
       type: 'blockage',
-      timestamp: '07:24 AM',
-      note: selectedSegmentId === TARGET_INCIDENT_SEGMENT_ID
-        ? 'Water rising at Darbe approach, knee-deep. Road impassable.'
-        : `Confirmed road impassable on ${segName} due to water accumulation.`,
+      timestamp: '08:21 IST',
+      note:
+        selectedSegmentId === TARGET_INCIDENT_SEGMENT_ID
+          ? 'Water rising at Darbe approach, knee-deep. Road impassable.'
+          : `Confirmed road impassable on ${segName} due to water accumulation.`,
     };
 
     setObservations((prev) => [...prev, newObs]);
@@ -222,7 +245,7 @@ export const App: React.FC = () => {
       riderId: currentRider,
       riderName: profile.shortName,
       type: 'reopening',
-      timestamp: '08:05 AM',
+      timestamp: '08:45 IST',
       note: 'Water receded. Pickups and autos passing through approach.',
     };
 
@@ -250,7 +273,7 @@ export const App: React.FC = () => {
       riderId: currentRider,
       riderName: profile.shortName,
       type: 'reopening',
-      timestamp: '08:12 AM',
+      timestamp: '08:52 IST',
       note: 'Confirmed approach passable. Water level below curb.',
     };
 
@@ -261,8 +284,65 @@ export const App: React.FC = () => {
     setAnnouncement('Road confirmed reopened by 2 independent riders.');
   }, [currentRider, selectedSegmentReopenings, selectedSegmentId, handleHighlightSegment]);
 
+  // Camera Action: Attach Observation
+  const handleAttachCameraObservation = useCallback(
+    (newObs: CameraObservation) => {
+      setCameraObservations((prev) => {
+        // Prevent duplicate entries for the same camera frame on this segment
+        const existingIdx = prev.findIndex(
+          (c) =>
+            c.cameraId === newObs.cameraId &&
+            c.frameId === newObs.frameId &&
+            c.segmentId === newObs.segmentId
+        );
+        if (existingIdx >= 0) {
+          const updated = [...prev];
+          updated[existingIdx] = newObs;
+          return updated;
+        }
+        return [...prev, newObs];
+      });
+
+      setAnnouncement(
+        `Camera observation attached to incident: “${newObs.selectedObservation}”`
+      );
+    },
+    []
+  );
+
+  // Camera Action: Open Frame Review
+  const handleReviewCameraFrame = useCallback(
+    (cameraId: string, frameId: string) => {
+      setActiveCameraReview({ cameraId, frameId });
+    },
+    []
+  );
+
+  // Camera Action: Close Frame Review
+  const handleCloseCameraReview = useCallback(() => {
+    setActiveCameraReview(null);
+  }, []);
+
   const targetSegment = PUTTUR_SEGMENTS.find((s) => s.id === selectedSegmentId);
   const selectedSegmentName = targetSegment?.name || 'Selected approach';
+
+  // Details for active camera review modal
+  const reviewCamera = activeCameraReview
+    ? CAMERA_REGISTRY[activeCameraReview.cameraId]
+    : null;
+  const reviewFrame = reviewCamera
+    ? reviewCamera.frames.find((f) => f.id === activeCameraReview?.frameId)
+    : null;
+  const existingCameraObservation = activeCameraReview
+    ? cameraObservations.find(
+        (c) =>
+          c.cameraId === activeCameraReview.cameraId &&
+          c.frameId === activeCameraReview.frameId &&
+          c.segmentId === selectedSegmentId
+      )
+    : undefined;
+  const firstReportTime =
+    selectedSegmentObservations[0]?.timestamp || '08:14 IST';
 
   return (
     <div className="atlas-app-container">
@@ -288,12 +368,26 @@ export const App: React.FC = () => {
             originalRoute={initialBaseRoute}
             comparisonSelection={comparisonSelection}
             highlightedSegmentId={highlightedSegmentId}
+            isReviewingCamera={!!activeCameraReview}
+            activeCameraRecord={activeCameraRecord}
             onSelectSegment={(segId) => {
               setSelectedSegmentId(segId);
               setInlineNotice(null);
               handleHighlightSegment(segId);
             }}
           />
+
+          {/* Camera Frame Review Panel: Visible inside the workspace alongside the map */}
+          {activeCameraReview && reviewCamera && reviewFrame && (
+            <CameraReviewModal
+              camera={reviewCamera}
+              frame={reviewFrame}
+              reportTimestamp={firstReportTime}
+              existingObservation={existingCameraObservation}
+              onAttachObservation={handleAttachCameraObservation}
+              onClose={handleCloseCameraReview}
+            />
+          )}
         </section>
 
         <section className="atlas-sheet-pane">
@@ -304,6 +398,7 @@ export const App: React.FC = () => {
             selectedSegmentName={selectedSegmentName}
             observations={selectedSegmentObservations}
             reopeningObservations={selectedSegmentReopenings}
+            cameraObservations={cameraObservations}
             activeRoute={activeRoute}
             originalRoute={initialBaseRoute}
             comparisonSelection={comparisonSelection}
@@ -314,6 +409,7 @@ export const App: React.FC = () => {
             onReportReopening={handleReportReopening}
             onConfirmReopening={handleConfirmReopening}
             onSelectObservation={(segId) => handleHighlightSegment(segId)}
+            onReviewCameraFrame={handleReviewCameraFrame}
             inlineNotice={inlineNotice}
           />
         </section>

@@ -896,3 +896,744 @@ html, body {
     padding: 0.45rem 0.75rem;
   }
 }
+
+/* ==========================================================================
+   CCTV ROAD CAMERA EVIDENCE & REVIEW SYSTEM
+   ========================================================================== */
+
+/* Road Camera Section in Incident Sheet */
+.sheet-camera-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.85rem 1rem;
+  background-color: #F5F1E8;
+  border: 1px solid #E2DBCF;
+  border-radius: 6px;
+}
+
+.camera-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.camera-section-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--atlas-charcoal-muted);
+}
+
+.camera-section-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--atlas-charcoal);
+}
+
+/* Matched Camera Card */
+.camera-card-matched {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 0.2rem;
+}
+
+.camera-card-main {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.camera-card-thumb-wrap {
+  position: relative;
+  width: 90px;
+  height: 52px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #D6CFBF;
+  background-color: #202C2C;
+  flex-shrink: 0;
+}
+
+.camera-card-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.camera-card-thumb-badge {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  background-color: rgba(14, 20, 20, 0.88);
+  color: #FFFFFF;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.1rem 0.3rem;
+  border-radius: 2px;
+  letter-spacing: 0.04em;
+}
+
+.camera-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.camera-card-road-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--atlas-charcoal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.camera-card-dir {
+  font-size: 0.76rem;
+  color: var(--atlas-charcoal-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.camera-card-time {
+  font-size: 0.74rem;
+  color: #007C76;
+  font-weight: 600;
+}
+
+.camera-card-attached-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.55rem;
+  background-color: #E8F3F1;
+  border: 1px solid #B8DDD9;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #004F4B;
+}
+
+.attached-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #007C76;
+}
+
+.camera-card-action-row {
+  display: flex;
+}
+
+.btn-review-camera {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.45rem 0.8rem;
+  background-color: #FFFFFF;
+  color: #007C76;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: 1.2px solid #007C76;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-review-camera:hover {
+  background-color: #007C76;
+  color: #FFFFFF;
+}
+
+.btn-review-camera:focus-visible {
+  outline: 2px solid #007C76;
+  outline-offset: 1px;
+}
+
+/* Stale Camera Card (outside 10m window) */
+.camera-card-unmatched {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.6rem 0.75rem;
+  background-color: #F8EFE4;
+  border: 1px solid #EAD4BE;
+  border-radius: 5px;
+}
+
+.camera-unmatched-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.camera-meta-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  background-color: #202C2C;
+  color: #FFFFFF;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+}
+
+.camera-unmatched-road {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--atlas-charcoal);
+}
+
+.camera-unmatched-msg {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #9C5808;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.camera-unmatched-sub {
+  font-size: 0.74rem;
+  color: #6C5234;
+}
+
+/* No Camera Card */
+.camera-card-none {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.5rem 0.65rem;
+  background-color: #EFEBE2;
+  border: 1px solid #DDD6C7;
+  border-radius: 5px;
+}
+
+.camera-none-text {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--atlas-charcoal);
+}
+
+.camera-none-sub {
+  font-size: 0.74rem;
+  color: var(--atlas-charcoal-muted);
+}
+
+/* Timeline Camera Entry */
+.timeline-camera-item {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border-radius: 6px;
+  padding: 0.3rem 0.4rem;
+  margin: -0.3rem -0.4rem;
+}
+
+.timeline-camera-item:hover {
+  background-color: #F0ECE2;
+}
+
+.timeline-camera-item:focus-visible {
+  outline: 2px solid var(--atlas-petrol-teal);
+}
+
+.dot-camera {
+  background-color: #007C76 !important;
+  box-shadow: 0 0 0 3px #D0ECE9 !important;
+}
+
+.timeline-camera-choice-tag {
+  display: inline-block;
+  margin-top: 0.25rem;
+  padding: 0.2rem 0.5rem;
+  background-color: #E8F4F2;
+  border: 1px solid #B8DDD9;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #004F4B;
+}
+
+.timeline-camera-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+  font-size: 0.74rem;
+  color: var(--atlas-charcoal-muted);
+}
+
+/* Directional Camera Map Marker */
+.camera-marker-layer {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.camera-marker-active circle:first-of-type {
+  stroke: #004F4B;
+  stroke-width: 3.5px;
+}
+
+/* ==========================================================================
+   CAMERA REVIEW MODAL & DESKTOP INSPECTION PANEL
+   ========================================================================== */
+
+.camera-review-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 35;
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+  background-color: rgba(28, 38, 38, 0.28);
+  backdrop-filter: blur(2px);
+  padding: 1rem 1.25rem;
+  overflow: hidden;
+  animation: fadeIn 0.18s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.camera-review-card {
+  width: 510px;
+  max-width: 55%;
+  height: 100%;
+  background-color: #FAF9F5;
+  border: 1px solid var(--sheet-border);
+  border-radius: 8px;
+  box-shadow: -6px 0 24px rgba(0, 0, 0, 0.16);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideInRight 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(30px);
+    opacity: 0.6;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Modal Header */
+.camera-review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.15rem;
+  background-color: #F4F1E8;
+  border-bottom: 1px solid var(--sheet-border);
+  flex-shrink: 0;
+}
+
+.camera-review-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.camera-meta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.camera-review-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--atlas-charcoal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.camera-review-dir {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--atlas-charcoal-muted);
+}
+
+.camera-review-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #EAE5D9;
+  border: 1px solid #DCD5C7;
+  border-radius: 5px;
+  color: var(--atlas-charcoal);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.camera-review-close-btn:hover {
+  background-color: #DDD6C7;
+}
+
+.camera-review-close-btn:focus-visible {
+  outline: 2px solid var(--atlas-petrol-teal);
+}
+
+/* Modal Body */
+.camera-review-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Still Frame Viewport */
+.camera-frame-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: #121818;
+  border: 1px solid #384646;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
+  flex-shrink: 0;
+}
+
+.camera-frame-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.camera-frame-strip {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 34px;
+  background-color: rgba(14, 20, 20, 0.94);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.75rem;
+  color: #E2ECEB;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+}
+
+.strip-left {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.strip-cam {
+  font-weight: 700;
+  color: #00D6CB;
+}
+
+.strip-road {
+  font-weight: 600;
+}
+
+.strip-dot {
+  color: #6A7E7C;
+}
+
+.strip-dir {
+  color: #A0B3B1;
+  font-size: 0.7rem;
+}
+
+.strip-right {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+.strip-time {
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.strip-badge {
+  font-size: 0.65rem;
+  color: #8DA19F;
+}
+
+.camera-frame-demo-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: rgba(18, 24, 24, 0.88);
+  color: #D3DFDD;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  letter-spacing: 0.02em;
+}
+
+/* Temporal Relationship Block */
+.camera-temporal-block {
+  background-color: #F3EFE6;
+  border: 1px solid #E4DDD1;
+  border-radius: 6px;
+  padding: 0.75rem 0.9rem;
+}
+
+.temporal-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.temporal-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.84rem;
+}
+
+.temporal-label {
+  color: var(--atlas-charcoal-muted);
+  font-weight: 600;
+}
+
+.temporal-value {
+  color: var(--atlas-charcoal);
+  font-weight: 700;
+}
+
+.temporal-delta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.35rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed #D6CDBF;
+}
+
+.temporal-delta-text {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #007C76;
+}
+
+.temporal-window-pill {
+  font-size: 0.7rem;
+  font-weight: 600;
+  background-color: #E3EDE9;
+  color: #004F4B;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+}
+
+/* Decision Block */
+.camera-decision-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  background-color: #FFFFFF;
+  border: 1px solid #E6E0D5;
+  border-radius: 6px;
+  padding: 0.9rem 1rem;
+}
+
+.decision-heading {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--atlas-charcoal);
+}
+
+.decision-subtext {
+  font-size: 0.78rem;
+  color: var(--atlas-charcoal-muted);
+  margin-top: -0.35rem;
+}
+
+.decision-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 0.2rem;
+}
+
+.decision-option-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  background-color: #FAF8F3;
+  border: 1px solid #E4DDD1;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.decision-option-label:hover {
+  background-color: #F2EEE4;
+  border-color: #D2C8B8;
+}
+
+.decision-option-label.selected {
+  background-color: #EAF4F2;
+  border-color: #007C76;
+  box-shadow: 0 1px 3px rgba(0, 124, 118, 0.1);
+}
+
+.decision-radio-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.decision-radio-custom {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.8px solid #9BAAA8;
+  background-color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.decision-option-label.selected .decision-radio-custom {
+  border-color: #007C76;
+  background-color: #007C76;
+}
+
+.decision-option-label.selected .decision-radio-custom::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+}
+
+.decision-choice-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--atlas-charcoal);
+}
+
+.decision-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.btn-attach-observation {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  background-color: #007C76;
+  color: #FFFFFF;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-attach-observation:hover:not(:disabled) {
+  background-color: #00605B;
+}
+
+.btn-attach-observation:focus-visible {
+  outline: 2px solid #004F4B;
+  outline-offset: 1px;
+}
+
+.btn-attach-observation:disabled {
+  background-color: #D2DCDA;
+  color: #7D8E8C;
+  cursor: not-allowed;
+}
+
+.attached-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.7rem;
+  background-color: #E8F5F1;
+  border: 1px solid #BFE3D7;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #006954;
+}
+
+.attached-check-icon {
+  font-weight: 800;
+}
+
+/* Mobile responsive bottom sheet */
+@media (max-width: 900px) {
+  .camera-review-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .camera-review-card {
+    width: 100%;
+    max-width: 100%;
+    max-height: 88vh;
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.25);
+    animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+}
+

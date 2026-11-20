@@ -1,0 +1,349 @@
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+import puppeteer from 'puppeteer-core';
+
+const CHROME_PATH = fs.existsSync('C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe')
+  ? 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+  : 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+
+const targetDir = path.resolve(process.cwd(), 'public/assets/cctv');
+fs.mkdirSync(targetDir, { recursive: true });
+
+function getCam01Svg() {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <!-- Sky gradient -->
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4B5658" />
+      <stop offset="55%" stop-color="#7B8B8C" />
+      <stop offset="100%" stop-color="#A5B2B0" />
+    </linearGradient>
+
+    <!-- Mist layers -->
+    <linearGradient id="mistGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#98A4A3" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#C5CECB" stop-opacity="0.4" />
+    </linearGradient>
+
+    <!-- Asphalt Road gradient -->
+    <linearGradient id="roadGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#464E4D" />
+      <stop offset="40%" stop-color="#363E3E" />
+      <stop offset="100%" stop-color="#222828" />
+    </linearGradient>
+
+    <!-- Water Flood pooling gradient -->
+    <linearGradient id="waterGrad" x1="0.3" y1="0" x2="0.7" y2="1">
+      <stop offset="0%" stop-color="#556461" stop-opacity="0.92" />
+      <stop offset="35%" stop-color="#6F8380" stop-opacity="0.88" />
+      <stop offset="70%" stop-color="#485A57" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#344341" stop-opacity="0.98" />
+    </linearGradient>
+
+    <!-- Sky reflection on water -->
+    <linearGradient id="waterReflection" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#A3B4B2" stop-opacity="0.6" />
+      <stop offset="50%" stop-color="#7B8E8C" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#394745" stop-opacity="0.7" />
+    </linearGradient>
+
+    <filter id="monsoonHaze" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" result="noise" />
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.12 0" />
+      <feComposite in2="SourceGraphic" in="gl" operator="over" />
+    </filter>
+
+    <pattern id="rainPattern" width="40" height="80" patternTransform="rotate(15)" patternUnits="userSpaceOnUse">
+      <line x1="10" y1="5" x2="10" y2="28" stroke="#D3DCDB" stroke-width="0.75" opacity="0.3" />
+      <line x1="30" y1="42" x2="30" y2="68" stroke="#D3DCDB" stroke-width="0.75" opacity="0.25" />
+    </pattern>
+  </defs>
+
+  <!-- 1. Sky & Distant Atmosphere -->
+  <rect width="1280" height="720" fill="url(#skyGrad)" />
+
+  <!-- Distant Western Ghats foothills & monsoon mist -->
+  <path d="M0 320 Q280 280 580 305 T1280 295 L1280 400 L0 400 Z" fill="#6A7A77" opacity="0.4" />
+  <path d="M0 335 Q340 310 720 325 T1280 315 L1280 400 L0 400 Z" fill="#586765" opacity="0.55" />
+  <rect x="0" y="290" width="1280" height="70" fill="url(#mistGrad)" />
+
+  <!-- 2. Roadside Embankments & Dakshina Kannada Flora (Betel palm, coconut, rain tree) -->
+  <!-- Left Side Tree Line -->
+  <g fill="#273330">
+    <!-- Tall Areca/Coconut Palm trunks & crowns -->
+    <path d="M 85 410 Q 92 250 115 120 L 122 120 Q 98 250 93 410 Z" fill="#3A4643" />
+    <!-- Fronds -->
+    <path d="M 118 120 Q 50 130 10 180 Q 70 145 118 120 Z" fill="#2E3D39" />
+    <path d="M 118 120 Q 120 40 105 10 Q 125 50 118 120 Z" fill="#293734" />
+    <path d="M 118 120 Q 180 80 230 110 Q 170 110 118 120 Z" fill="#283633" />
+    <path d="M 118 120 Q 190 150 210 200 Q 165 160 118 120 Z" fill="#25322F" />
+
+    <!-- Secondary palm -->
+    <path d="M 175 400 Q 185 280 205 180 L 211 180 Q 191 280 181 400 Z" fill="#384441" />
+    <path d="M 208 180 Q 250 120 310 130 Q 255 150 208 180 Z" fill="#293633" />
+    <path d="M 208 180 Q 150 140 120 170 Q 165 170 208 180 Z" fill="#283532" />
+
+    <!-- Broadleaf Rain Tree canopy silhouette on left -->
+    <path d="M -40 430 Q -10 280 50 240 Q 110 200 180 240 Q 220 280 200 370 Q 150 430 -40 430 Z" fill="#222F2C" opacity="0.95" />
+    <path d="M 30 380 Q 90 320 150 340 Q 210 360 220 420 L 0 430 Z" fill="#2D3B38" />
+  </g>
+
+  <!-- Right Side Foliage & Commercial/Residential compounds -->
+  <g fill="#273330">
+    <path d="M 1140 420 Q 1120 270 1100 130 L 1107 130 Q 1127 270 1147 420 Z" fill="#3A4643" />
+    <path d="M 1103 130 Q 1150 70 1210 75 Q 1155 105 1103 130 Z" fill="#2B3936" />
+    <path d="M 1103 130 Q 1040 90 990 120 Q 1050 125 1103 130 Z" fill="#263431" />
+    <path d="M 1103 130 Q 1050 160 1020 210 Q 1070 175 1103 130 Z" fill="#283734" />
+
+    <!-- Compound Wall & low buildings in distance -->
+    <rect x="980" y="340" width="180" height="50" fill="#3D4A47" />
+    <polygon points="980,340 1070,305 1160,340" fill="#4B3936" />
+    <rect x="1005" y="355" width="25" height="30" fill="#293331" />
+    <rect x="1060" y="355" width="25" height="30" fill="#293331" />
+
+    <!-- Dense roadside shrubs on right -->
+    <path d="M 920 440 Q 980 320 1080 330 Q 1200 300 1300 360 L 1300 460 L 920 450 Z" fill="#25322F" />
+  </g>
+
+  <!-- Utility Pole on Left Verge -->
+  <rect x="235" y="240" width="10" height="200" fill="#485350" />
+  <line x1="210" y1="260" x2="270" y2="260" stroke="#333D3A" stroke-width="4" />
+  <line x1="215" y1="262" x2="0" y2="240" stroke="#252E2C" stroke-width="1.2" opacity="0.7" />
+  <line x1="265" y1="262" x2="600" y2="295" stroke="#252E2C" stroke-width="1.2" opacity="0.7" />
+  <line x1="240" y1="250" x2="600" y2="285" stroke="#252E2C" stroke-width="1.2" opacity="0.6" />
+
+  <!-- 3. Ground Plane & Darbe West Approach Asphalt Corridor -->
+  <!-- Left earthen verge -->
+  <polygon points="0,430 480,360 495,362 0,550" fill="#3B4641" />
+  <!-- Right earthen verge -->
+  <polygon points="1280,440 760,360 740,362 1280,560" fill="#38433E" />
+
+  <!-- Concrete road curbs -->
+  <polygon points="480,360 492,362 135,720 115,720" fill="#66726F" />
+  <polygon points="760,360 748,362 1145,720 1165,720" fill="#606C69" />
+
+  <!-- Asphalt Roadway (Bolwar to Darbe Junction perspective) -->
+  <polygon points="492,362 748,362 1145,720 135,720" fill="url(#roadGrad)" />
+
+  <!-- Distant Darbe Junction Landmark / Signage -->
+  <g transform="translate(615, 335)">
+    <!-- Overhead road direction gantry in far distance -->
+    <line x1="-35" y1="25" x2="-35" y2="2" stroke="#485452" stroke-width="2" />
+    <line x1="45" y1="25" x2="45" y2="2" stroke="#485452" stroke-width="2" />
+    <rect x="-35" y="2" width="80" height="15" rx="1.5" fill="#2E5A44" stroke="#1D3E2E" stroke-width="1" />
+    <rect x="-32" y="4" width="74" height="11" fill="none" stroke="#FFFFFF" stroke-width="0.6" opacity="0.8" />
+    <text x="5" y="12" fill="#FFFFFF" font-size="7" font-family="-apple-system, sans-serif" font-weight="700" text-anchor="middle">DARBE JN →</text>
+  </g>
+
+  <!-- Distant vehicle halted in distance (auto rickshaw silhouette) -->
+  <g transform="translate(565, 347)">
+    <rect x="0" y="5" width="22" height="12" rx="2" fill="#2A3331" />
+    <polygon points="4,5 7,1 18,1 20,5" fill="#C29828" opacity="0.85" />
+    <circle cx="5" cy="18" r="3" fill="#151A19" />
+    <circle cx="17" cy="18" r="3" fill="#151A19" />
+    <circle cx="20" cy="9" r="1.5" fill="#DC3826" opacity="0.9" />
+  </g>
+
+  <!-- Road Center Dashed Line (Partially submerged under water) -->
+  <g stroke="#D1DDD8" stroke-width="4" stroke-dasharray="25 35" opacity="0.4" stroke-linecap="round">
+    <line x1="620" y1="365" x2="628" y2="440" stroke-width="2" />
+    <line x1="628" y1="440" x2="635" y2="490" stroke-width="3" opacity="0.2" />
+    <!-- Submerged further forward -->
+    <line x1="635" y1="490" x2="640" y2="580" stroke-width="5" opacity="0.1" />
+  </g>
+
+  <!-- 4. FLOODWATER EVIDENCE LAYER (Realistic Standing Monsoon Stormwater) -->
+  <!-- Main Pooling Carriageway Water Body spanning curb-to-curb across Darbe West Approach -->
+  <path d="M 230 670 
+           C 280 580, 390 530, 480 490 
+           C 540 460, 580 430, 620 430 
+           C 660 430, 710 450, 780 480 
+           C 870 520, 990 580, 1050 670 
+           L 1135 720 
+           L 145 720 Z" 
+        fill="url(#waterGrad)" />
+
+  <!-- Upper water pooling tongue stretching deeper towards Darbe -->
+  <path d="M 440 510 
+           C 500 440, 540 415, 610 415 
+           C 680 415, 730 445, 770 500 
+           C 710 480, 660 470, 610 470 
+           C 550 470, 490 485, 440 510 Z" 
+        fill="#50615E" opacity="0.8" />
+
+  <!-- Specular Sky & Tree Reflection Bands on Floodwater Surface -->
+  <ellipse cx="610" cy="510" rx="190" ry="22" fill="url(#waterReflection)" />
+  <ellipse cx="580" cy="565" rx="280" ry="32" fill="url(#waterReflection)" />
+  <ellipse cx="640" cy="630" rx="360" ry="40" fill="url(#waterReflection)" />
+
+  <!-- Water Surface Ripples & Wavelets (Wind/Rain disturbed standing pool) -->
+  <g stroke="#9EB2AF" stroke-width="1.4" opacity="0.6" stroke-linecap="round" fill="none">
+    <path d="M 480 485 Q 520 480 560 486" />
+    <path d="M 590 478 Q 630 473 670 480" />
+    <path d="M 410 520 Q 480 512 550 522" stroke-width="1.8" />
+    <path d="M 620 515 Q 710 508 790 518" stroke-width="1.8" />
+    <path d="M 330 570 Q 440 558 560 572" stroke-width="2.2" opacity="0.75" />
+    <path d="M 640 565 Q 760 552 870 568" stroke-width="2.2" opacity="0.75" />
+    <path d="M 280 625 Q 420 610 590 628" stroke-width="2.6" opacity="0.8" />
+    <path d="M 670 620 Q 820 605 980 625" stroke-width="2.6" opacity="0.8" />
+    <path d="M 220 680 Q 400 660 620 682" stroke-width="2.8" opacity="0.85" />
+    <path d="M 690 675 Q 890 658 1080 680" stroke-width="2.8" opacity="0.85" />
+  </g>
+
+  <!-- Curb submergence indicator: Water lapping against left and right concrete curb -->
+  <path d="M 220 680 L 155 720 L 180 720 Z" fill="#42514E" opacity="0.9" />
+  <path d="M 1060 680 L 1130 720 L 1105 720 Z" fill="#42514E" opacity="0.9" />
+
+  <!-- Subtle Rain Overlay -->
+  <rect width="1280" height="720" fill="url(#rainPattern)" pointer-events="none" />
+
+  <!-- 5. CAMERA OVERLAY & TIMESTAMP STRIP (Subtle, Crisp, Non-sensational) -->
+  <!-- Top Left Subtle Camera Identifier & Orientation Pill -->
+  <g transform="translate(28, 28)">
+    <rect x="0" y="0" width="220" height="34" rx="4" fill="#121818" fill-opacity="0.85" stroke="#2B3636" stroke-width="1" />
+    <circle cx="18" cy="17" r="4.5" fill="#00A39B" />
+    <text x="32" y="22" fill="#E8F0EF" font-size="12" font-family="'JetBrains Mono', Consolas, monospace" font-weight="700" letter-spacing="0.04em">
+      CAM-01 · PUTTUR TRAFFIC
+    </text>
+  </g>
+
+  <!-- Top Right Prototype Disclosure Badge -->
+  <g transform="translate(1015, 28)">
+    <rect x="0" y="0" width="235" height="34" rx="4" fill="#121818" fill-opacity="0.85" stroke="#3D4B4B" stroke-width="1" />
+    <text x="117" y="21" fill="#D2DBD9" font-size="11.5" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="600" text-anchor="middle" letter-spacing="0.02em">
+      Illustrative camera view
+    </text>
+  </g>
+
+  <!-- Bottom Dark Timestamp Strip -->
+  <g transform="translate(0, 650)">
+    <rect width="1280" height="70" fill="#0E1414" fill-opacity="0.94" />
+    <line x1="0" y1="0" x2="1280" y2="0" stroke="#2A3737" stroke-width="1.5" />
+
+    <!-- Left: Camera Metadata & Road Coverage -->
+    <text x="32" y="28" fill="#F0F5F4" font-size="14.5" font-family="'JetBrains Mono', Consolas, monospace" font-weight="700" letter-spacing="0.03em">
+      CAM-01 · DARBE WEST APPROACH (MAIN RD)
+    </text>
+    <text x="32" y="50" fill="#8CA09E" font-size="12" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="500">
+      Viewing direction: Facing East toward Darbe Junction · Sector Mast #14
+    </text>
+
+    <!-- Right: Precise Capture Timestamp & Recording Status -->
+    <text x="1248" y="28" text-anchor="end" fill="#00C4BA" font-size="14.5" font-family="'JetBrains Mono', Consolas, monospace" font-weight="700" letter-spacing="0.04em">
+      2026-11-20 08:12:00 IST
+    </text>
+    <text x="1248" y="50" text-anchor="end" fill="#8CA09E" font-size="12" font-family="'JetBrains Mono', Consolas, monospace" font-weight="500">
+      RECORDED DEMO FRAME · FIXED OPTIC
+    </text>
+  </g>
+</svg>`;
+}
+
+function getCam02Svg() {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="skyGrad2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4B5658" />
+      <stop offset="60%" stop-color="#6F7E80" />
+      <stop offset="100%" stop-color="#919F9E" />
+    </linearGradient>
+    <linearGradient id="roadGrad2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4A5252" />
+      <stop offset="100%" stop-color="#242B2B" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#skyGrad2)" />
+  <path d="M0 340 Q380 300 780 325 T1280 320 L1280 430 L0 430 Z" fill="#4B5856" opacity="0.7" />
+
+  <!-- Roadside vegetation -->
+  <polygon points="0,430 420,380 440,380 0,620" fill="#313C38" />
+  <polygon points="1280,440 820,380 800,380 1280,620" fill="#2E3935" />
+
+  <!-- Road -->
+  <polygon points="440,380 800,380 1200,720 80,720" fill="url(#roadGrad2)" />
+  <!-- Dry road, no flooding here at 07:45 -->
+  <line x1="620" y1="380" x2="640" y2="720" stroke="#CAD8D4" stroke-width="4" stroke-dasharray="25 35" opacity="0.4" />
+
+  <!-- Top Left Identifier -->
+  <g transform="translate(28, 28)">
+    <rect x="0" y="0" width="220" height="34" rx="4" fill="#121818" fill-opacity="0.85" stroke="#2B3636" stroke-width="1" />
+    <circle cx="18" cy="17" r="4.5" fill="#758A88" />
+    <text x="32" y="22" fill="#E8F0EF" font-size="12" font-family="'JetBrains Mono', Consolas, monospace" font-weight="700" letter-spacing="0.04em">
+      CAM-02 · PUTTUR TRAFFIC
+    </text>
+  </g>
+
+  <!-- Top Right Prototype Disclosure Badge -->
+  <g transform="translate(1015, 28)">
+    <rect x="0" y="0" width="235" height="34" rx="4" fill="#121818" fill-opacity="0.85" stroke="#3D4B4B" stroke-width="1" />
+    <text x="117" y="21" fill="#D2DBD9" font-size="11.5" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="600" text-anchor="middle" letter-spacing="0.02em">
+      Illustrative camera view
+    </text>
+  </g>
+
+  <!-- Bottom Dark Timestamp Strip -->
+  <g transform="translate(0, 650)">
+    <rect width="1280" height="70" fill="#0E1414" fill-opacity="0.94" />
+    <line x1="0" y1="0" x2="1280" y2="0" stroke="#2A3737" stroke-width="1.5" />
+
+    <text x="32" y="28" fill="#F0F5F4" font-size="14.5" font-family="'JetBrains Mono', Consolas, monospace" font-weight="700" letter-spacing="0.03em">
+      CAM-02 · DARBE – BANNUR ARTERIAL
+    </text>
+    <text x="32" y="50" fill="#8CA09E" font-size="12" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="500">
+      Viewing direction: Facing Northeast toward Bannur Cross · Sector Mast #08
+    </text>
+
+    <text x="1248" y="28" text-anchor="end" fill="#8CA09E" font-size="14.5" font-family="'JetBrains Mono', Consolas, monospace" font-weight="700" letter-spacing="0.04em">
+      2026-11-20 07:45:00 IST
+    </text>
+    <text x="1248" y="50" text-anchor="end" fill="#697C7A" font-size="12" font-family="'JetBrains Mono', Consolas, monospace" font-weight="500">
+      RECORDED DEMO FRAME · STALE ARCHIVE
+    </text>
+  </g>
+</svg>`;
+}
+
+async function run() {
+  const cam01Svg = getCam01Svg();
+  const cam02Svg = getCam02Svg();
+
+  fs.writeFileSync(path.join(targetDir, 'cam-01-darbe-west.svg'), cam01Svg, 'utf8');
+  fs.writeFileSync(path.join(targetDir, 'cam-02-darbe-bannur.svg'), cam02Svg, 'utf8');
+  console.log('Saved SVG camera assets to public/assets/cctv/');
+
+  // Use puppeteer to render PNG versions as well
+  const userDataDir = path.join(os.tmpdir(), 'jalamap-cam-profile-' + Date.now());
+  const browser = await puppeteer.launch({
+    executablePath: CHROME_PATH,
+    headless: true,
+    userDataDir,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+
+  const page = await browser.newPage();
+  await page.setViewport({ width: 1280, height: 720, deviceScaleFactor: 1 });
+
+  // Render CAM-01 PNG
+  await page.setContent(cam01Svg, { waitUntil: 'load' });
+  await page.screenshot({ path: path.join(targetDir, 'cam-01-darbe-west.png') });
+
+  // Render CAM-01 Thumbnail (320x180)
+  await page.setViewport({ width: 320, height: 180, deviceScaleFactor: 1 });
+  await page.setContent(cam01Svg, { waitUntil: 'load' });
+  await page.screenshot({ path: path.join(targetDir, 'cam-01-darbe-west-thumb.png') });
+
+  // Render CAM-02 PNG
+  await page.setViewport({ width: 1280, height: 720, deviceScaleFactor: 1 });
+  await page.setContent(cam02Svg, { waitUntil: 'load' });
+  await page.screenshot({ path: path.join(targetDir, 'cam-02-darbe-bannur.png') });
+
+  await browser.close();
+  console.log('Generated PNG and Thumbnail camera assets successfully!');
+}
+
+run().catch((err) => {
+  console.error('Error generating assets:', err);
+  process.exit(1);
+});

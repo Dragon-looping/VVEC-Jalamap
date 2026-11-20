@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="skyGrad2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4B5658" />
+      <stop offset="60%" stop-color="#6F7E80" />
+      <stop offset="100%" stop-color="#919F9E" />
+    </linearGradient>
+    <linearGradient id="roadGrad2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4A5252" />
+      <stop offset="100%" stop-color="#242B2B" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#skyGrad2)" />
+  <path d="M0 340 Q380 300 780 325 T1280 320 L1280 430 L0 430 Z" fill="#4B5856" opacity="0.7" />
+
+  <!-- Roadside vegetation -->
+  <polygon points="0,430 420,380 440,380 0,620" fill="#313C38" />
+  <polygon points="1280,440 820,380 800,380 1280,620" fill="#2E3935" />
+
+  <!-- Road -->
+  <polygon points="440,380 800,380 1200,720 80,720" fill="url(#roadGrad2)" />
+  <!-- Dry road, no flooding here at 07:45 -->
+  <line x1="620" y1="380" x2="640" y2="720" stroke="#CAD8D4" stroke-width="4" stroke-dasharray="25 35" opacity="0.4" />
+
+  <!-- Top Left Identifier -->
+  <g transform="translate(28, 28)">
+    <rect x="0" y="0" width="220" height="34" rx="4" fill="#121818" fill-opacity="0.85" stroke="#2B3636" stroke-width="1" />
+    <circle cx="18" cy="17" r="4.5" fill="#758A88" />
+    <text x="32" y="22" fill="#E8F0EF" font-size="12" font-family="'JetBrains Mono', Consolas, monospace" font-weight="700" letter-spacing="0.04em">
+      CAM-02 · PUTTUR TRAFFIC
+    </text>
+  </g>
+
+  <!-- Top Right Prototype Disclosure Badge -->
+  <g transform="translate(1015, 28)">
+    <rect x="0" y="0" width="235" height="34" rx="4" fill="#121818" fill-opacity="0.85" stroke="#3D4B4B" stroke-width="1" />
+    <text x="117" y="21" fill="#D2DBD9" font-size="11.5" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="600" text-anchor="middle" letter-spacing="0.02em">
+      Illustrative camera view
+    </text>
+  </g>
+
+  <!-- Bottom Dark Timestamp Strip -->
+  <g transform="translate(0, 650)">
+    <rect width="1280" height="70" fill="#0E1414" fill-opacity="0.94" />
+    <line x1="0" y1="0" x2="1280" y2="0" stroke="#2A3737" stroke-width="1.5" />
+
+    <text x="32" y="28" fill="#F0F5F4" font-size="14.5" font-family="'JetBrains Mono', Consolas, monospace" font-weight="700" letter-spacing="0.03em">
+      CAM-02 · DARBE – BANNUR ARTERIAL
+    </text>
+    <text x="32" y="50" fill="#8CA09E" font-size="12" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-weight="500">
+      Viewing direction: Facing Northeast toward Bannur Cross · Sector Mast #08
+    </text>
+
+    <text x="1248" y="28" text-anchor="end" fill="#8CA09E" font-size="14.5" font-family="'JetBrains Mono', Consolas, monospace" font-weight="700" letter-spacing="0.04em">
+      2026-11-20 07:45:00 IST
+    </text>
+    <text x="1248" y="50" text-anchor="end" fill="#697C7A" font-size="12" font-family="'JetBrains Mono', Consolas, monospace" font-weight="500">
+      RECORDED DEMO FRAME · STALE ARCHIVE
+    </text>
+  </g>
+</svg>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RouteResult, ComparisonRouteSelection } from '../types';
+import { RouteResult, ComparisonRouteSelection, CameraRecord } from '../types';
 import { PUTTUR_SEGMENTS } from '../data/putturNetwork';
 
 interface MapAtlasProps {
@@ -9,6 +9,8 @@ interface MapAtlasProps {
   originalRoute: RouteResult | null;
   comparisonSelection: ComparisonRouteSelection;
   highlightedSegmentId: string | null;
+  isReviewingCamera?: boolean;
+  activeCameraRecord?: CameraRecord | null;
   onSelectSegment: (segmentId: string) => void;
 }
 
@@ -19,6 +21,8 @@ export const MapAtlas: React.FC<MapAtlasProps> = ({
   originalRoute,
   comparisonSelection,
   highlightedSegmentId,
+  isReviewingCamera,
+  activeCameraRecord,
   onSelectSegment,
 }) => {
   const [zoomLevel, setZoomLevel] = useState<number>(1);
@@ -192,7 +196,10 @@ export const MapAtlas: React.FC<MapAtlasProps> = ({
             let strokeColor = isSecondary ? '#D4CEC2' : '#C4BDAE';
             let strokeWidth = isSecondary ? 5.5 : 8;
 
-            if (isSelected) {
+            if (isReviewingCamera && isSelected) {
+              strokeColor = '#007C76';
+              strokeWidth = 11;
+            } else if (isSelected) {
               strokeColor = '#D98818';
               strokeWidth = 10;
             } else if (isHighlighted) {
@@ -354,6 +361,70 @@ export const MapAtlas: React.FC<MapAtlasProps> = ({
               </g>
             );
           })()
+        )}
+
+        {/* Directional Camera Marker Layer */}
+        {activeCameraRecord && (
+          <g
+            className={`camera-marker-layer ${isReviewingCamera ? 'camera-marker-active' : ''}`}
+            transform={`translate(${activeCameraRecord.mapMarker.x}, ${activeCameraRecord.mapMarker.y})`}
+          >
+            {/* Directional Field-of-View Cone pointing along camera orientation */}
+            <g transform={`rotate(${activeCameraRecord.mapMarker.angleDegrees})`}>
+              <path
+                d="M 0 0 L 110 -36 L 110 36 Z"
+                fill="rgba(0, 124, 118, 0.18)"
+                stroke="#007C76"
+                strokeWidth="1.4"
+                strokeDasharray="4 3"
+              />
+              <line
+                x1="14"
+                y1="0"
+                x2="72"
+                y2="0"
+                stroke="#007C76"
+                strokeWidth="1.8"
+                strokeDasharray="3 2"
+              />
+              <polygon points="72,0 64,-3.5 64,3.5" fill="#007C76" />
+            </g>
+
+            {/* Camera Body Icon / Pill */}
+            <circle cx="0" cy="0" r="14" fill="#FFFFFF" stroke="#007C76" strokeWidth="2.4" />
+            <circle cx="0" cy="0" r="11" fill="#007C76" />
+            {/* Camera glyph */}
+            <path
+              d="M -4.5 -2.5 L -3 -4.5 L 3 -4.5 L 4.5 -2.5 L 6 -2.5 C 6.8 -2.5 7.5 -1.8 7.5 -1 L 7.5 4 C 7.5 4.8 6.8 5.5 6 5.5 L -6 5.5 C -6.8 5.5 -7.5 4.8 -7.5 4 L -7.5 -1 C -7.5 -1.8 -6.8 -2.5 -6 -2.5 Z"
+              fill="#FFFFFF"
+            />
+            <circle cx="0" cy="1.5" r="2.2" fill="#007C76" />
+
+            {/* Camera Label Banner */}
+            <g transform="translate(0, -22)">
+              <rect
+                x="-36"
+                y="-9"
+                width="72"
+                height="18"
+                rx="3.5"
+                fill="#202C2C"
+                stroke="#FFFFFF"
+                strokeWidth="1.2"
+              />
+              <text
+                x="0"
+                y="3.5"
+                fill="#FFFFFF"
+                fontSize="9.5"
+                fontWeight="700"
+                textAnchor="middle"
+                fontFamily="'JetBrains Mono', Consolas, monospace"
+              >
+                {activeCameraRecord.id}
+              </text>
+            </g>
+          </g>
         )}
 
         {/* 8. Clean Geographic Labels (Positioned Beside Roads, Clear of Route Lines) */}
